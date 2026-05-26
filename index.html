@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stroke Gallery</title>
+    
+    <link rel="stylesheet" href="./styles.css">
+    
+    <!-- Scripts loaded as ES Modules under Vite -->
+    <script type="module" src="js/helpers/navigation.js"></script>
+    <script type="module" src="js/app.js"></script>
+</head>
+<body>
+    <main class="main-content">
+        <div class="canvas-outer">
+            <div class="controls-container">
+                <button id="btn-toggle-settings" class="control-btn">Settings</button>
+                <button id="btn-randomize-objects" class="control-btn">Randomize Objects</button>
+                <button id="btn-randomize-color" class="control-btn">Randomize Color</button>
+                <button id="btn-save-png" class="control-btn">Save PNG</button>
+                <button id="btn-record-video" class="control-btn">Record Video (16sec)</button>
+            </div>
+            <div class="canvas-wrapper" id="canvas-container">
+                <canvas id="canvas3d"></canvas>
+                <div id="settings-panel" class="settings-panel hidden">
+                    <div class="settings-header">
+                        <h3>Objects</h3>
+                    </div>
+                    <div class="settings-options">
+                        <label class="settings-label">
+                            <input type="checkbox" id="chk-cube" checked>
+                            <span class="checkbox-custom"></span>
+                            Cube
+                        </label>
+                        <label class="settings-label">
+                            <input type="checkbox" id="chk-bezier" checked>
+                            <span class="checkbox-custom"></span>
+                            Bezier
+                        </label>
+                        <label class="settings-label">
+                            <input type="checkbox" id="chk-spiral" checked>
+                            <span class="checkbox-custom"></span>
+                            Spiral
+                        </label>
+                        <label class="settings-label">
+                            <input type="checkbox" id="chk-zigzag" checked>
+                            <span class="checkbox-custom"></span>
+                            Zigzag
+                        </label>
+                        <label class="settings-label">
+                            <input type="checkbox" id="chk-zigzag-bezier" checked>
+                            <span class="checkbox-custom"></span>
+                            Zigzag Bezier
+                        </label>
+                        <label class="settings-label">
+                            <input type="checkbox" id="chk-lissajous" checked>
+                            <span class="checkbox-custom"></span>
+                            Lissajous
+                        </label>
+                        <label class="settings-label">
+                            <input type="checkbox" id="chk-physics" checked>
+                            <span class="checkbox-custom"></span>
+                            Physics
+                        </label>
+                    </div>
+
+                    <div class="settings-header" style="margin-top: 16px; border-top: 1px solid rgba(17, 17, 17, 0.15); padding-top: 12px;">
+                        <h3>Textures</h3>
+                    </div>
+                    <div class="settings-options">
+                        <label class="settings-label">
+                            <input type="radio" name="rad-texture" value="solid" checked>
+                            <span class="radio-custom"></span>
+                            Solid / Gradient
+                        </label>
+                        <label class="settings-label">
+                            <input type="radio" name="rad-texture" value="dry_brush">
+                            <span class="radio-custom"></span>
+                            Dry Brush
+                        </label>
+                        <label class="settings-label">
+                            <input type="radio" name="rad-texture" value="charcoal">
+                            <span class="radio-custom"></span>
+                            Charcoal
+                        </label>
+                        <label class="settings-label">
+                            <input type="radio" name="rad-texture" value="ink_dotted">
+                            <span class="radio-custom"></span>
+                            Ink Dotted
+                        </label>
+                        <label class="settings-label">
+                            <input type="radio" name="rad-texture" value="hatching">
+                            <span class="radio-custom"></span>
+                            Hatching
+                        </label>
+                        <label class="settings-label">
+                            <input type="radio" name="rad-texture" value="acrylic">
+                            <span class="radio-custom"></span>
+                            Acrylic
+                        </label>
+                    </div>
+
+                    <div class="settings-header" style="margin-top: 16px; border-top: 1px solid rgba(17, 17, 17, 0.15); padding-top: 12px;">
+                        <h3>Noise Mode</h3>
+                    </div>
+                    <div class="settings-options">
+                        <label class="settings-label">
+                            <input type="radio" name="rad-noise-mode" value="auto" checked>
+                            <span class="radio-custom"></span>
+                            Auto (Brush U/V)
+                        </label>
+                        <label class="settings-label">
+                            <input type="radio" name="rad-noise-mode" value="2">
+                            <span class="radio-custom"></span>
+                            Brush U (Longitudinal)
+                        </label>
+                        <label class="settings-label">
+                            <input type="radio" name="rad-noise-mode" value="3">
+                            <span class="radio-custom"></span>
+                            Brush V (Orthogonal)
+                        </label>
+                        <label class="settings-label">
+                            <input type="radio" name="rad-noise-mode" value="1">
+                            <span class="radio-custom"></span>
+                            Raw Noise
+                        </label>
+                        <label class="settings-label">
+                            <input type="radio" name="rad-noise-mode" value="0">
+                            <span class="radio-custom"></span>
+                            Off (Solid Gradient)
+                        </label>
+                    </div>
+                    
+                    <div class="settings-header" style="margin-top: 16px; border-top: 1px solid rgba(17, 17, 17, 0.15); padding-top: 12px;">
+                        <h3>Cap Style</h3>
+                    </div>
+                    <div class="settings-options">
+                        <label class="settings-label">
+                            <input type="radio" name="rad-cap-style" value="rounded">
+                            <span class="radio-custom"></span>
+                            Rounded
+                        </label>
+                        <label class="settings-label">
+                            <input type="radio" name="rad-cap-style" value="square">
+                            <span class="radio-custom"></span>
+                            Square
+                        </label>
+                        <label class="settings-label">
+                            <input type="radio" name="rad-cap-style" value="ragged" checked>
+                            <span class="radio-custom"></span>
+                            Ragged
+                        </label>
+                    </div>
+
+                    <div class="settings-header" style="margin-top: 16px; border-top: 1px solid rgba(17, 17, 17, 0.15); padding-top: 12px;">
+                        <h3>Grid Layout</h3>
+                    </div>
+                    <div class="settings-options">
+                        <label class="settings-label">
+                            <input type="radio" name="rad-grid-layout" value="2x2" checked>
+                            <span class="radio-custom"></span>
+                            2x2 Grid (2.0x Scale)
+                        </label>
+                        <label class="settings-label">
+                            <input type="radio" name="rad-grid-layout" value="3x3">
+                            <span class="radio-custom"></span>
+                            3x3 Grid (1.4x Scale)
+                        </label>
+                        <label class="settings-label">
+                            <input type="radio" name="rad-grid-layout" value="4x4">
+                            <span class="radio-custom"></span>
+                            4x4 Grid (1.0x Scale)
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

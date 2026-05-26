@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Primitives</title>
+    
+    <link rel="stylesheet" href="./styles.css">
+    
+    <!-- Scripts loaded as ES Modules under Vite -->
+    <script type="module" src="js/helpers/navigation.js"></script>
+    <script type="module" src="js/primitives.js"></script>
+
+    <style>
+        /* Sub-option styles (paint styles nested under shape) */
+        .shape-styles {
+            display: none;
+            padding-left: 20px;
+            margin-bottom: 4px;
+        }
+        .shape-styles.visible {
+            display: block;
+        }
+        .settings-label--sub {
+            opacity: 0.85;
+            font-size: 0.92em;
+        }
+    </style>
+</head>
+<body>
+    <main class="main-content">
+        <div class="canvas-outer">
+            <div class="controls-container">
+                <button id="btn-toggle-settings" class="control-btn">Settings</button>
+                <button id="btn-randomize-objects" class="control-btn">Randomize Objects</button>
+                <button id="btn-randomize-color" class="control-btn">Randomize Color</button>
+                <button id="btn-save-png" class="control-btn">Save PNG</button>
+                <button id="btn-record-video" class="control-btn">Record Video (16sec)</button>
+            </div>
+            <div class="canvas-wrapper" id="canvas-container">
+                <canvas id="canvas3d"></canvas>
+                <div id="settings-panel" class="settings-panel hidden">
+                    <div class="settings-header">
+                        <h3>Objects</h3>
+                    </div>
+                    <div class="settings-options">
+
+                        <!-- Sphere -->
+                        <label class="settings-label">
+                            <input type="checkbox" id="chk-sphere" checked>
+                            <span class="checkbox-custom"></span>
+                            Sphere
+                        </label>
+                        <div class="shape-styles visible" id="styles-sphere">
+                            <label class="settings-label settings-label--sub">
+                                <input type="checkbox" class="chk-style" data-shape="sphere" data-style="0" checked>
+                                <span class="checkbox-custom"></span>
+                                Spiral
+                            </label>
+                            <label class="settings-label settings-label--sub">
+                                <input type="checkbox" class="chk-style" data-shape="sphere" data-style="1" checked>
+                                <span class="checkbox-custom"></span>
+                                Horizontal Paint
+                            </label>
+                            <label class="settings-label settings-label--sub">
+                                <input type="checkbox" class="chk-style" data-shape="sphere" data-style="2" checked>
+                                <span class="checkbox-custom"></span>
+                                Vertical Paint
+                            </label>
+                            <label class="settings-label settings-label--sub">
+                                <input type="checkbox" class="chk-style" data-shape="sphere" data-style="3" checked>
+                                <span class="checkbox-custom"></span>
+                                Mix
+                            </label>
+                        </div>
+
+                        <!-- Cone -->
+                        <label class="settings-label">
+                            <input type="checkbox" id="chk-cone" checked>
+                            <span class="checkbox-custom"></span>
+                            Cone
+                        </label>
+                        <div class="shape-styles visible" id="styles-cone">
+                            <label class="settings-label settings-label--sub">
+                                <input type="checkbox" class="chk-style" data-shape="cone" data-style="0" checked>
+                                <span class="checkbox-custom"></span>
+                                Spiral
+                            </label>
+                            <label class="settings-label settings-label--sub">
+                                <input type="checkbox" class="chk-style" data-shape="cone" data-style="1" checked>
+                                <span class="checkbox-custom"></span>
+                                Horizontal Paint
+                            </label>
+                            <label class="settings-label settings-label--sub">
+                                <input type="checkbox" class="chk-style" data-shape="cone" data-style="2" checked>
+                                <span class="checkbox-custom"></span>
+                                Vertical Paint
+                            </label>
+                            <label class="settings-label settings-label--sub">
+                                <input type="checkbox" class="chk-style" data-shape="cone" data-style="3" checked>
+                                <span class="checkbox-custom"></span>
+                                Mix
+                            </label>
+                        </div>
+
+                        <!-- Cylinder -->
+                        <label class="settings-label">
+                            <input type="checkbox" id="chk-cylinder" checked>
+                            <span class="checkbox-custom"></span>
+                            Cylinder
+                        </label>
+                        <div class="shape-styles visible" id="styles-cylinder">
+                            <label class="settings-label settings-label--sub">
+                                <input type="checkbox" class="chk-style" data-shape="cylinder" data-style="0" checked>
+                                <span class="checkbox-custom"></span>
+                                Spiral
+                            </label>
+                            <label class="settings-label settings-label--sub">
+                                <input type="checkbox" class="chk-style" data-shape="cylinder" data-style="1" checked>
+                                <span class="checkbox-custom"></span>
+                                Horizontal Paint
+                            </label>
+                            <label class="settings-label settings-label--sub">
+                                <input type="checkbox" class="chk-style" data-shape="cylinder" data-style="2" checked>
+                                <span class="checkbox-custom"></span>
+                                Vertical Paint
+                            </label>
+                            <label class="settings-label settings-label--sub">
+                                <input type="checkbox" class="chk-style" data-shape="cylinder" data-style="3" checked>
+                                <span class="checkbox-custom"></span>
+                                Mix
+                            </label>
+                        </div>
+
+                    </div>
+
+                    <div class="settings-header" style="margin-top: 16px; border-top: 1px solid rgba(17, 17, 17, 0.15); padding-top: 12px;">
+                        <h3>Grid Layout</h3>
+                    </div>
+                    <div class="settings-options">
+                        <label class="settings-label">
+                            <input type="radio" name="rad-grid-layout" value="2x2" checked>
+                            <span class="radio-custom"></span>
+                            2x2 Grid (2.0x Scale)
+                        </label>
+                        <label class="settings-label">
+                            <input type="radio" name="rad-grid-layout" value="3x3">
+                            <span class="radio-custom"></span>
+                            3x3 Grid (1.4x Scale)
+                        </label>
+                        <label class="settings-label">
+                            <input type="radio" name="rad-grid-layout" value="4x4">
+                            <span class="radio-custom"></span>
+                            4x4 Grid (1.0x Scale)
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

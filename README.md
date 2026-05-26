@@ -1,2 +1,1 @@
-# stroke_three
-# stroke_three
+# paint_three
