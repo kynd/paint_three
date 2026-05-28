@@ -1,9 +1,12 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { palettes } from './helpers/palettes.js';
-import { SphereAnimator }   from './animators/SphereAnimator.js';
-import { ConeAnimator }     from './animators/ConeAnimator.js';
-import { CylinderAnimator } from './animators/CylinderAnimator.js';
+import { SphereAnimator }       from './animators/SphereAnimator.js';
+import { ConeAnimator }         from './animators/ConeAnimator.js';
+import { CylinderAnimator }     from './animators/CylinderAnimator.js';
+import { TorusAnimator }        from './animators/TorusAnimator.js';
+import { PyramidAnimator }      from './animators/PyramidAnimator.js';
+import { TwistedTubeAnimator }  from './animators/TwistedTubeAnimator.js';
 
 // DOM elements
 const container = document.getElementById('canvas-container');
@@ -44,23 +47,29 @@ let strokePaletteColors = paletteColors.filter((_, idx) => idx !== bgIndex);
 
 // Animator class map
 const animatorClasses = {
-    sphere:   SphereAnimator,
-    cone:     ConeAnimator,
-    cylinder: CylinderAnimator
+    sphere:       SphereAnimator,
+    cone:         ConeAnimator,
+    cylinder:     CylinderAnimator,
+    torus:        TorusAnimator,
+    pyramid:      PyramidAnimator,
+    'twisted-tube': TwistedTubeAnimator
 };
 
 // Paint style names (for display / reference)
-const styleNames = { 0: 'Spiral', 1: 'Horizontal Paint', 2: 'Vertical Paint', 3: 'Mix' };
+const styleNames = { 0: 'Spiral', 1: 'Horizontal Paint', 2: 'Vertical Paint', 3: 'Mix', 4: 'Gradient' };
 
 // ─── State ────────────────────────────────────────────────────────────────────
 // Which shape types are enabled
-const selectedShapes = { sphere: true, cone: true, cylinder: true };
+const selectedShapes = { sphere: true, cone: true, cylinder: true, torus: true, pyramid: true, 'twisted-tube': true };
 
 // Which paint styles are enabled per shape
 const selectedStyles = {
-    sphere:   { 0: true, 1: true, 2: true, 3: true },
-    cone:     { 0: true, 1: true, 2: true, 3: true },
-    cylinder: { 0: true, 1: true, 2: true, 3: true }
+    sphere:       { 0: true, 1: true, 2: true, 3: true, 4: true },
+    cone:         { 0: true, 1: true, 2: true, 3: true, 4: true },
+    cylinder:     { 0: true, 1: true, 2: true, 3: true, 4: true },
+    torus:        { 0: true, 1: true, 2: true, 3: true, 4: true },
+    pyramid:      { 0: true, 1: true, 2: true, 3: true, 4: true },
+    'twisted-tube': { 0: true, 1: true, 2: true, 3: true, 4: true }
 };
 
 // Grid layout state
@@ -73,7 +82,7 @@ const gridLayoutConfigs = {
 };
 
 // ─── Persistence ──────────────────────────────────────────────────────────────
-const SETTINGS_KEY = 'primitives_gallery_settings_v2';
+const SETTINGS_KEY = 'primitives_gallery_settings_v3';
 
 function saveSettings() {
     localStorage.setItem(SETTINGS_KEY, JSON.stringify({ selectedShapes, selectedStyles, currentGridLayout }));
@@ -214,7 +223,7 @@ if (btnToggleSettings && settingsPanel) {
 }
 
 // Shape checkboxes — toggle shape and show/hide style sub-options
-['sphere', 'cone', 'cylinder'].forEach(shape => {
+['sphere', 'cone', 'cylinder', 'torus', 'pyramid', 'twisted-tube'].forEach(shape => {
     const chk = document.getElementById(`chk-${shape}`);
     const stylesDiv = document.getElementById(`styles-${shape}`);
     if (chk) {

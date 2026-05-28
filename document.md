@@ -181,6 +181,93 @@ Base class handling lifecycle, scaling, and update loops for dynamic procedural 
 
 ---
 
-## 5. Export Actions
+## 5. Primitive Animators (`js/animators/` — used by `primitives.html`)
+
+All primitive animators share the same constructor signature: `(group, strokePaletteColors, camera, paintStyle)`. They pick 4 distinct random palette colours (`colorBase`, `colorX`, `colorY`, `colorZ`) and drive a `ShaderMaterial` with `uPaintStyle` (0–4).
+
+### Paint Styles (all primitives)
+| Value | Name | Description |
+|-------|------|-------------|
+| 0 | Spiral | Helical noise pattern tightening toward the apex/along the path |
+| 1 | Horizontal Paint | Turbulence bands circling the object horizontally |
+| 2 | Vertical Paint | 3-colour zones from base to top/tip (area-compensated where applicable) |
+| 3 | Mix | Vertical zones as base, horizontal noise overpaints a 4th colour |
+| 4 | Gradient | Seamless two-colour blend using the **fold** technique (see below) |
+
+**Seam-free fold technique**: Circular coordinates (UV wrapping around a closed axis) use `fold(t) = 1 − |2t − 1|` instead of a linear 0→1 ramp. This maps to 0→1→0, so the seam where UV wraps is always value-matched and invisible.
+
+### `SphereAnimator`
+- Geometry: `THREE.SphereGeometry(radius, 64, 32)`. Radius `[0.55, 0.85]`.
+- UV: `vUv.x` = longitude (φ), `vUv.y` = latitude (θ), `v_sphere = (1 − cos(θ·π)) / 2` (area-compensated height).
+- Gradient: blends `colorBase → colorX` by `v_sphere`.
+
+### `ConeAnimator`
+- Geometry: `THREE.ConeGeometry(radius, height, 64, 32, true)` (open-ended). Radius `[0.42, 0.72]`, height `[0.9, 1.75]`.
+- Cap: flat base disc via `buildCapGeometry`.
+- UV: `vUv.x` = φ, `vUv.y = v_axis` (0 = base, 1 = tip). Vertical-paint zones area-compensated for taper.
+- Gradient: blends `colorBase → colorX` by `v_axis`.
+
+### `CylinderAnimator`
+- Geometry: `THREE.CylinderGeometry(r, r, h, 64, 32, true)`. Radius `[0.32, 0.60]`, height `[0.8, 1.70]`.
+- Caps: top and bottom discs via `buildCapGeometry`.
+- UV: `vUv.x` = φ, `vUv.y = v_axis` (0 = bottom, 1 = top).
+- Gradient: blends `colorBase → colorX` by `v_axis`.
+
+### `TorusAnimator`
+- Geometry: `THREE.TorusGeometry(majorR, tubeR, 24, 96)`. majorR `[0.38, 0.65]`, tubeR `[0.12, 0.28]`.
+- UV: `vUv.x` = poloidal φ (around tube cross-section), `vUv.y` = toroidal φ (around big ring).
+- **Seam fix**: All styles use `fv = fold(vUv.y)` for the toroidal z-coordinate in noise space; style 0 also uses `fu = fold(vUv.x)` for the poloidal z-coordinate. This eliminates the visible stripe seam.
+- Gradient: blends `colorBase → colorX` by `fold(vUv.y)` (symmetric gradient around the big ring).
+
+### `PyramidAnimator`
+- Geometry: `THREE.ConeGeometry(radius, height, 4, 24, true)` (4 radial segments = square pyramid). Radius `[0.50, 0.80]`, height `[0.70, 1.35]`.
+- Cap: square base via `buildCapGeometry(radius, −height/2, 4, 4, 0.0, 1.0)`.
+- Shader: identical to `ConeAnimator`; φ wraps 4× per full rotation so each triangular face gets its own texture copy.
+- Gradient: blends `colorBase → colorX` by `v_axis`.
+
+### `TwistedTubeAnimator`
+- Path: two C1-continuous cubic Bézier segments. C1 junction: `q1 = 2·p3 − p2` (reflection of p2 through p3). Control points randomized in `[−0.7, 0.7]` (XY) and `[−0.5, 0.5]` (Z).
+- Geometry: `THREE.TubeGeometry(path, 120, tubeRadius, 32, false)`. tubeRadius `[0.08, 0.18]`.
+- Twist uniform `uTwistTurns ∈ [1, 3]`: shifts the cross-section angle as `tphi = phi + v_axis · uTwistTurns · 2π`, making the noise pattern spiral along the path.
+- Caps: solid-colour `THREE.CircleGeometry` discs at each path endpoint, oriented via `quaternion.setFromUnitVectors(+Z, tangent)`. Cap colour = `colorBase`.
+- UV: `vUv.x` = around cross-section, `vUv.y = v_axis` (along path, 0→1, no wrap).
+- Gradient: blends `colorBase → colorX` by `fold(vUv.x)` (symmetric across cross-section, seam-free).
+
+---
+
+## 6. Export Actions
 - **`save png`**: Captures a snapshot of the current 3D viewport. Performs a manual render immediately before capture to preserve the WebGL buffer. The background color in the output matches the current scene clear color, which is kept in sync with the CSS background theme color via `renderer.setClearColor`.
 - **`record video (16sec)`**: Records 16 seconds of real-time canvas animation. Uses `MediaRecorder` targeting high-quality WebM container formats (VP9/VP8) with automated browser fallback support. Updates the button text dynamically with a countdown timer during recording.
+
+---
+
+## 7. Mix Page (`mix.html` / `js/mix.js`)
+
+Combines stroke and primitive animators in a single free-placement scene.
+
+### Object placement
+Objects are distributed randomly in the scene (`x ∈ [−6, 6]`, `y ∈ [−5, 5]`, `z ∈ [−1, 1]`). Each object's scale is drawn uniformly from `[sizeMin, sizeMax]`. No grid.
+
+### Settings panel (two-column)
+| Column | Contents |
+|--------|----------|
+| Left — Strokes | Checkboxes for Bezier, Spiral, Zigzag, Zigzag Bezier, Lissajous, Physics, Cube; then Textures, Noise Mode, Cap Style radio groups (same options as Stroke Gallery) |
+| Right — Primitives | Checkboxes for Sphere, Cone, Cylinder, Torus, Pyramid, Twisted Tube, each with 5 paint-style sub-checkboxes |
+
+Texture / Noise Mode / Cap Style changes are applied **in-place** to existing stroke renderers without rebuilding the scene.
+
+### Layout controls (number steppers only)
+- **Count** — `input[type=number]`, range `[2, 10]`, default 8. Rebuilds scene on change.
+- **Min Size** — `input[type=number]`, range `[0.3, 3.0]`, step 0.1. Clamped to ≤ Max Size.
+- **Max Size** — `input[type=number]`, range `[0.3, 3.0]`, step 0.1. Clamped to ≥ Min Size.
+
+### Additional controls
+- **Pause / Resume** — freezes animator updates while still rendering and accepting orbit input. Button text and `.active` style toggles with state.
+- **Randomize Objects** — rebuilds the scene with a new random layout.
+- **Randomize Color** — picks a new background color and reassigns palette colors to all existing animators **in-place** (no repositioning). Stroke animators: `colorA.fromArray()` / `colorB.fromArray()`. Primitive animators: all four `colorBase/X/Y/Z.fromArray()`; TwistedTubeAnimator caps additionally synced via `capStartMesh.material.color.copy()` / `capEndMesh.material.color.copy()`.
+- **Save PNG** / **Record Video (16sec)** — same as other pages.
+
+### Animator construction
+- Stroke animators receive two random palette colors (`colorA`, `colorB`).
+- Primitive animators receive the full palette array and a randomly selected enabled paint style.
+- `StrokeRenderer` static defaults are set to solid texture, ragged caps, auto noise before any animators are constructed.

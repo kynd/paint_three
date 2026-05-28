@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const navItems = [
         { name: 'Stroke Gallery', url: 'index.html' },
         { name: 'Primitives', url: 'primitives.html' },
+        { name: 'Mix', url: 'mix.html' },
         { name: 'Documentation', url: '#documentation' }
     ];
 

@@ -97,51 +97,59 @@ export class TorusAnimator {
 
                 ${NOISE_GLSL}
 
+                // Fold a 0→1 coordinate into 0→1→0 to eliminate circular seams.
+                float fold(float t) { return 1.0 - abs(t * 2.0 - 1.0); }
+
                 void main() {
                     float PI = 3.141592653589793;
                     float phi_pol = vUv.x * 2.0 * PI; // angle around tube cross-section
                     float phi_tor = vUv.y * 2.0 * PI; // angle around the big ring
+                    float fv = fold(vUv.y); // folded toroidal coord — 0→1→0, seamless
+                    float fu = fold(vUv.x); // folded poloidal coord — 0→1→0, seamless
 
                     vec3 col;
 
                     if (uPaintStyle == 0) {
-                        // Spiral: toroidal phi is twisted by the poloidal position —
-                        // creates a helix that winds around the ring, like a torus knot pattern.
+                        // Spiral: toroidal phi twisted by poloidal position — torus-knot pattern.
+                        // z uses folded poloidal so the cross-section seam is seamless.
                         float spiral_phi = phi_tor + phi_pol * 3.0;
-                        vec3 p = vec3(cos(spiral_phi)*3.0+5.0, sin(spiral_phi)*3.0+5.0, vUv.x*2.0+5.0);
+                        vec3 p = vec3(cos(spiral_phi)*3.0+5.0, sin(spiral_phi)*3.0+5.0, fu*2.0+5.0);
                         float n = clamp((turbulence(p, 5) - 0.35)*2.0+0.5, 0.0, 1.0);
                         col = mix(uColorBase, uColorX, smoothstep(0.42, 0.58, n));
 
                     } else if (uPaintStyle == 1) {
-                        // Horizontal Paint: stripes that band around the hole (toroidal bands).
-                        // Noise varies quickly in the toroidal direction (vUv.y*6) and slowly
-                        // around the tube cross-section (cos/sin phi_pol * 1).
-                        vec3 p = vec3(cos(phi_pol)*1.0+5.0, sin(phi_pol)*1.0+5.0, vUv.y*6.0+5.0);
+                        // Horizontal Paint: toroidal bands ringing the hole.
+                        // z uses folded toroidal so bands meet seamlessly at the back of the ring.
+                        vec3 p = vec3(cos(phi_pol)*1.0+5.0, sin(phi_pol)*1.0+5.0, fv*6.0+5.0);
                         float n = clamp((turbulence(p, 5) - 0.35)*2.0+0.5, 0.0, 1.0);
                         col = mix(uColorBase, uColorX, smoothstep(0.42, 0.58, n));
 
                     } else if (uPaintStyle == 2) {
-                        // Vertical Paint: 3 colour zones going around the big ring (toroidal axis),
-                        // with boundaries that shift around the tube cross-section (poloidal noise).
-                        vec3 p = vec3(cos(phi_pol)*6.0+5.0, sin(phi_pol)*6.0+5.0, vUv.y*1.0+5.0);
+                        // Vertical Paint: 3 colour zones going around the big ring.
+                        // Folded toroidal coord gives symmetric, seam-free zone placement.
+                        vec3 p = vec3(cos(phi_pol)*6.0+5.0, sin(phi_pol)*6.0+5.0, fv*1.0+5.0);
                         float noiseOff = clamp((turbulence(p, 5) - 0.35)*2.0+0.5, 0.0, 1.0);
-                        float crd = vUv.y + (noiseOff - 0.5)*0.175;
+                        float crd = fv + (noiseOff - 0.5)*0.175;
                         col = uColorBase;
                         col = mix(col, uColorX, smoothstep(0.36, 0.40, crd));
                         col = mix(col, uColorY, smoothstep(0.60, 0.64, crd));
 
-                    } else {
+                    } else if (uPaintStyle == 3) {
                         // Mix: toroidal 3-zone base, then toroidal-band noise overpaints 4th colour.
-                        vec3 p_vert  = vec3(cos(phi_pol)*6.0+5.0, sin(phi_pol)*6.0+5.0, vUv.y*1.0+5.0);
+                        vec3 p_vert  = vec3(cos(phi_pol)*6.0+5.0, sin(phi_pol)*6.0+5.0, fv*1.0+5.0);
                         float nv_off = clamp((turbulence(p_vert, 5) - 0.35)*2.0+0.5, 0.0, 1.0);
-                        float crd    = vUv.y + (nv_off - 0.5)*0.175;
+                        float crd    = fv + (nv_off - 0.5)*0.175;
                         col = uColorBase;
                         col = mix(col, uColorX, smoothstep(0.36, 0.40, crd));
                         col = mix(col, uColorY, smoothstep(0.60, 0.64, crd));
 
-                        vec3 p_horiz  = vec3(cos(phi_pol)*1.0+5.0, sin(phi_pol)*1.0+5.0, vUv.y*6.0+5.0);
+                        vec3 p_horiz  = vec3(cos(phi_pol)*1.0+5.0, sin(phi_pol)*1.0+5.0, fv*6.0+5.0);
                         float h_blend = smoothstep(0.42, 0.58, clamp((turbulence(p_horiz, 5) - 0.35)*2.0+0.5, 0.0, 1.0));
                         col = mix(col, uColorZ, h_blend);
+
+                    } else {
+                        // Gradient: folds around the big ring (0→colorX→0), seam-free.
+                        col = mix(uColorBase, uColorX, fv);
                     }
 
                     gl_FragColor = vec4(col, 1.0);

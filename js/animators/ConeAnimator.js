@@ -132,7 +132,7 @@ export class ConeAnimator {
                         col = mix(col, uColorX, smoothstep(0.16, 0.20, crd));
                         col = mix(col, uColorY, smoothstep(0.40, 0.44, crd));
 
-                    } else {
+                    } else if (uPaintStyle == 3) {
                         // Mix: same area-compensated vertical base as Vertical Paint,
                         // then horizontal ring noise overpaints the 4th color on top.
                         vec3 p_vert  = vec3(cos(phi)*6.0+5.0, sin(phi)*6.0+5.0, v_axis*1.0+5.0);
@@ -145,6 +145,10 @@ export class ConeAnimator {
                         vec3 p_horiz  = vec3(cos(phi)*1.0+5.0, sin(phi)*1.0+5.0, v_axis*6.0+5.0);
                         float h_blend = smoothstep(0.42, 0.58, clamp((turbulence(p_horiz, 5) - 0.35)*2.0+0.5, 0.0, 1.0));
                         col = mix(col, uColorZ, h_blend);
+
+                    } else {
+                        // Gradient: smooth base-to-tip blend between two colors.
+                        col = mix(uColorBase, uColorX, v_axis);
                     }
 
                     gl_FragColor = vec4(col, 1.0);

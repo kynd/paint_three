@@ -12,7 +12,6 @@
     <script type="module" src="js/primitives.js"></script>
 
     <style>
-        /* Sub-option styles (paint styles nested under shape) */
         .shape-styles {
             display: none;
             padding-left: 20px;
@@ -20,10 +19,6 @@
         }
         .shape-styles.visible {
             display: block;
-        }
-        .settings-label--sub {
-            opacity: 0.85;
-            font-size: 0.92em;
         }
     </style>
 </head>
@@ -72,6 +67,11 @@
                                 <span class="checkbox-custom"></span>
                                 Mix
                             </label>
+                            <label class="settings-label settings-label--sub">
+                                <input type="checkbox" class="chk-style" data-shape="sphere" data-style="4" checked>
+                                <span class="checkbox-custom"></span>
+                                Gradient
+                            </label>
                         </div>
 
                         <!-- Cone -->
@@ -101,6 +101,11 @@
                                 <span class="checkbox-custom"></span>
                                 Mix
                             </label>
+                            <label class="settings-label settings-label--sub">
+                                <input type="checkbox" class="chk-style" data-shape="cone" data-style="4" checked>
+                                <span class="checkbox-custom"></span>
+                                Gradient
+                            </label>
                         </div>
 
                         <!-- Cylinder -->
@@ -129,6 +134,113 @@
                                 <input type="checkbox" class="chk-style" data-shape="cylinder" data-style="3" checked>
                                 <span class="checkbox-custom"></span>
                                 Mix
+                            </label>
+                            <label class="settings-label settings-label--sub">
+                                <input type="checkbox" class="chk-style" data-shape="cylinder" data-style="4" checked>
+                                <span class="checkbox-custom"></span>
+                                Gradient
+                            </label>
+                        </div>
+
+                        <!-- Torus -->
+                        <label class="settings-label">
+                            <input type="checkbox" id="chk-torus" checked>
+                            <span class="checkbox-custom"></span>
+                            Torus
+                        </label>
+                        <div class="shape-styles visible" id="styles-torus">
+                            <label class="settings-label settings-label--sub">
+                                <input type="checkbox" class="chk-style" data-shape="torus" data-style="0" checked>
+                                <span class="checkbox-custom"></span>
+                                Spiral
+                            </label>
+                            <label class="settings-label settings-label--sub">
+                                <input type="checkbox" class="chk-style" data-shape="torus" data-style="1" checked>
+                                <span class="checkbox-custom"></span>
+                                Horizontal Paint
+                            </label>
+                            <label class="settings-label settings-label--sub">
+                                <input type="checkbox" class="chk-style" data-shape="torus" data-style="2" checked>
+                                <span class="checkbox-custom"></span>
+                                Vertical Paint
+                            </label>
+                            <label class="settings-label settings-label--sub">
+                                <input type="checkbox" class="chk-style" data-shape="torus" data-style="3" checked>
+                                <span class="checkbox-custom"></span>
+                                Mix
+                            </label>
+                            <label class="settings-label settings-label--sub">
+                                <input type="checkbox" class="chk-style" data-shape="torus" data-style="4" checked>
+                                <span class="checkbox-custom"></span>
+                                Gradient
+                            </label>
+                        </div>
+
+                        <!-- Pyramid -->
+                        <label class="settings-label">
+                            <input type="checkbox" id="chk-pyramid" checked>
+                            <span class="checkbox-custom"></span>
+                            Pyramid
+                        </label>
+                        <div class="shape-styles visible" id="styles-pyramid">
+                            <label class="settings-label settings-label--sub">
+                                <input type="checkbox" class="chk-style" data-shape="pyramid" data-style="0" checked>
+                                <span class="checkbox-custom"></span>
+                                Spiral
+                            </label>
+                            <label class="settings-label settings-label--sub">
+                                <input type="checkbox" class="chk-style" data-shape="pyramid" data-style="1" checked>
+                                <span class="checkbox-custom"></span>
+                                Horizontal Paint
+                            </label>
+                            <label class="settings-label settings-label--sub">
+                                <input type="checkbox" class="chk-style" data-shape="pyramid" data-style="2" checked>
+                                <span class="checkbox-custom"></span>
+                                Vertical Paint
+                            </label>
+                            <label class="settings-label settings-label--sub">
+                                <input type="checkbox" class="chk-style" data-shape="pyramid" data-style="3" checked>
+                                <span class="checkbox-custom"></span>
+                                Mix
+                            </label>
+                            <label class="settings-label settings-label--sub">
+                                <input type="checkbox" class="chk-style" data-shape="pyramid" data-style="4" checked>
+                                <span class="checkbox-custom"></span>
+                                Gradient
+                            </label>
+                        </div>
+
+                        <!-- Twisted Tube -->
+                        <label class="settings-label">
+                            <input type="checkbox" id="chk-twisted-tube" checked>
+                            <span class="checkbox-custom"></span>
+                            Twisted Tube
+                        </label>
+                        <div class="shape-styles visible" id="styles-twisted-tube">
+                            <label class="settings-label settings-label--sub">
+                                <input type="checkbox" class="chk-style" data-shape="twisted-tube" data-style="0" checked>
+                                <span class="checkbox-custom"></span>
+                                Spiral
+                            </label>
+                            <label class="settings-label settings-label--sub">
+                                <input type="checkbox" class="chk-style" data-shape="twisted-tube" data-style="1" checked>
+                                <span class="checkbox-custom"></span>
+                                Horizontal Paint
+                            </label>
+                            <label class="settings-label settings-label--sub">
+                                <input type="checkbox" class="chk-style" data-shape="twisted-tube" data-style="2" checked>
+                                <span class="checkbox-custom"></span>
+                                Vertical Paint
+                            </label>
+                            <label class="settings-label settings-label--sub">
+                                <input type="checkbox" class="chk-style" data-shape="twisted-tube" data-style="3" checked>
+                                <span class="checkbox-custom"></span>
+                                Mix
+                            </label>
+                            <label class="settings-label settings-label--sub">
+                                <input type="checkbox" class="chk-style" data-shape="twisted-tube" data-style="4" checked>
+                                <span class="checkbox-custom"></span>
+                                Gradient
                             </label>
                         </div>
 

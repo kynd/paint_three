@@ -132,7 +132,7 @@ export class SphereAnimator {
                         col = mix(col, uColorX, smoothstep(0.36, 0.40, crd));
                         col = mix(col, uColorY, smoothstep(0.60, 0.64, crd));
 
-                    } else {
+                    } else if (uPaintStyle == 3) {
                         // Mix: vertical zones (N/equator/S) as base, then horizontal noise
                         // overpaints the 4th color on top of everything.
                         vec3 p_vert  = vec3(cos(phi_wrapped)*6.0+5.0, sin(phi_wrapped)*6.0+5.0, theta_wrapped*1.0+5.0);
@@ -145,6 +145,10 @@ export class SphereAnimator {
                         vec3 p_horiz  = vec3(cos(phi_wrapped)*1.0+5.0, sin(phi_wrapped)*1.0+5.0, theta_wrapped*6.0+5.0);
                         float h_blend = smoothstep(0.42, 0.58, clamp((turbulence(p_horiz, 5) - 0.35)*2.0+0.5, 0.0, 1.0));
                         col = mix(col, uColorZ, h_blend);
+
+                    } else {
+                        // Gradient: smooth pole-to-pole blend between two colors.
+                        col = mix(uColorBase, uColorX, v_sphere);
                     }
 
                     gl_FragColor = vec4(col, 1.0);

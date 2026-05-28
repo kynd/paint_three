@@ -246,10 +246,12 @@ body {
 
 .checkbox-custom {
     position: relative;
-    height: 14px;
-    width: 14px;
+    height: 11px;
+    width: 11px;
+    flex-shrink: 0;
     background-color: transparent;
     border: 1px solid var(--border-color);
+    border-radius: 2px;
     transition: var(--transition-fast);
 }
 
@@ -272,20 +274,21 @@ body {
 }
 
 .settings-label .checkbox-custom:after {
-    left: 4px;
-    top: 1px;
-    width: 4px;
-    height: 8px;
+    left: 2px;
+    top: 0px;
+    width: 3px;
+    height: 6px;
     border: solid #ffffff;
     border-width: 0 1.5px 1.5px 0;
-    transform: rotate(45deg);
+    transform: rotate(45deg) translateY(-1px);
 }
 
 /* Custom Radio Button Design */
 .radio-custom {
     position: relative;
-    height: 14px;
-    width: 14px;
+    height: 11px;
+    width: 11px;
+    flex-shrink: 0;
     background-color: transparent;
     border: 1px solid var(--border-color);
     border-radius: 50%;
@@ -311,12 +314,83 @@ body {
 }
 
 .settings-label .radio-custom:after {
-    left: 4px;
-    top: 4px;
-    width: 4px;
-    height: 4px;
+    left: 3px;
+    top: 3px;
+    width: 3px;
+    height: 3px;
     border-radius: 50%;
     background: #ffffff;
+}
+
+.settings-label--sub {
+    font-size: 0.65rem;
+    opacity: 0.85;
+}
+
+/* Wide settings panel (Mix page) */
+.settings-panel--wide {
+    width: 460px;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+}
+
+/* Two-column layout inside settings panel */
+.settings-columns {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.settings-column {
+    flex: 1;
+    min-width: 0;
+}
+
+.settings-divider {
+    margin: 12px 0;
+    border: none;
+    border-top: 1px solid rgba(17, 17, 17, 0.15);
+}
+
+/* Number stepper row (label + input[type=number]) */
+.stepper-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.stepper-row label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--text-primary);
+    min-width: 62px;
+    flex-shrink: 0;
+}
+
+.stepper-row input[type="number"] {
+    width: 62px;
+    font-size: 0.65rem;
+    font-family: var(--font-sora);
+    font-weight: 600;
+    text-align: center;
+    border: 1px solid var(--border-color);
+    background: transparent;
+    color: var(--text-primary);
+    padding: 3px 6px;
+    -moz-appearance: textfield;
+}
+
+.stepper-row input[type="number"]::-webkit-inner-spin-button,
+.stepper-row input[type="number"]::-webkit-outer-spin-button {
+    opacity: 1;
+}
+
+/* Paused state for control button */
+.control-btn.active {
+    background: var(--text-primary);
+    color: #fff;
 }
 
 /* ==========================================
